@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="cs" class="h-full bg-stone-50">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Udržitelně - Udržitelný Průvodce CZ/SK</title>
+  
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            forest: {
+              50: '#f2f7f3',
+              100: '#e1ede3',
+              200: '#c5dcc9',
+              300: '#9dc2a3',
+              400: '#71a37a',
+              500: '#51865b',
+              600: '#3e6b47',
+              700: '#33563a',
+              800: '#2b4530',
+              900: '#243a29',
+              950: '#122016'
+            },
+            terracotta: {
+              50: '#fbf6f4',
+              100: '#f7ebe6',
+              500: '#d97757',
+              600: '#c45a38',
+              700: '#a34224',
+            },
+            sand: {
+              50: '#fdfbf7',
+              100: '#f7f2e8',
+              200: '#eee3d0',
+              300: '#e1ceb1',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Google Fonts - Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 8px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #c5dcc9;
+      border-radius: 8px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #71a37a;
+    }
+  </style>
+</head>
+<body class="h-full text-stone-800 flex flex-col antialiased selection:bg-forest-200 selection:text-forest-900">
+
+  <div id="app" class="min-h-full flex flex-col">
+    <!-- Header / Navbar -->
+    <header class="sticky top-0 z-30 bg-stone-50/90 backdrop-blur-md border-b border-stone-200/80 transition-all duration-200">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+          
+          <!-- Logo & Back Button -->
+          <div class="flex items-center gap-3">
+            <button id="back-btn" class="hidden p-2 rounded-full hover:bg-stone-200 text-stone-600 transition" onclick="showHome()">
+              <i data-lucide="arrow-left" class="w-5 h-5"></i>
+            </button>
+            <div class="flex items-center gap-2.5 cursor-pointer" onclick="showHome()">
+              <div class="w-10 h-10 rounded-xl bg-forest-600 text-white flex items-center justify-center shadow-md">
+                <i data-lucide="sprout" class="w-6 h-6"></i>
+              </div>
+              <div>
+                <span class="font-extrabold text-xl tracking-tight leading-tight block text-forest-950">Udržitelně</span>
+                <span class="text-[11px] text-forest-600 font-semibold tracking-wide -mt-0.5 block uppercase">CZ / SK Průvodce</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Header Actions -->
+          <div class="flex items-center gap-2">
+            <!-- Install PWA Button (Hidden by default, shown when eligible) -->
+            <button id="install-pwa-btn" class="hidden items-center gap-1.5 px-3 py-1.5 rounded-xl bg-terracotta-600 hover:bg-terracotta-700 text-white text-xs font-bold shadow-sm transition">
+              <i data-lucide="download" class="w-4 h-4"></i>
+              <span class="hidden sm:inline">Nainstalovat PWA</span>
+            </button>
+
+            <!-- Backup/Restore Dropdown Toggle -->
+            <button onclick="toggleDataMenu()" class="p-2 rounded-xl text-stone-600 hover:bg-stone-200/80 transition relative" title="Správa dat">
+              <i data-lucide="database" class="w-5 h-5"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Data Management Menu Modal -->
+    <div id="data-menu" class="hidden fixed inset-0 z-50 bg-stone-900/40 backdrop-blur-sm flex items-center justify-center p-4">
+      <div class="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl border border-stone-100 relative">
+        <button onclick="toggleDataMenu()" class="absolute top-4 right-4 text-stone-400 hover:text-stone-600">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+        <h3 class="text-lg font-bold text-stone-800 mb-1 flex items-center gap-2">
+          <i data-lucide="database" class="w-5 h-5 text-forest-600"></i>
+          Správa a zálohování dat
+        </h3>
+        <p class="text-xs text-stone-500 mb-6">Můžete zálohovat své přidané značky, načíst je ze souboru nebo obnovit původní databázi.</p>
+        
+        <div class="space-y-3">
+          <button onclick="exportData()" class="w-full flex items-center justify-between p-3 rounded-2xl border border-stone-200 hover:border-forest-400 hover:bg-forest-50/50 transition text-left">
+            <div class="flex items-center gap-3">
+              <i data-lucide="download" class="w-5 h-5 text-forest-600"></i>
+              <div>
+                <div class="text-sm font-semibold text-stone-800">Exportovat data (JSON)</div>
+                <div class="text-xs text-stone-500">Stáhne zálohu vašich uložených značek</div>
+              </div>
+            </div>
+            <i data-lucide="chevron-right" class="w-4 h-4 text-stone-400"></i>
+          </button>
+
+          <label class="w-full flex items-center justify-between p-3 rounded-2xl border border-stone-200 hover:border-forest-400 hover:bg-forest-50/50 transition cursor-pointer">
+            <div class="flex items-center gap-3">
+              <i data-lucide="upload" class="w-5 h-5 text-forest-600"></i>
+              <div>
+                <div class="text-sm font-semibold text-stone-800">Importovat data</div>
+                <div class="text-xs text-stone-500">Načte data ze záložního JSON souboru</div>
+              </div>
+            </div>
+            <input type="file" id="import-file" accept=".json" class="hidden" onchange="importData(event)">
+            <i data-lucide="chevron-right" class="w-4 h-4 text-stone-400"></i>
+          </label>
+
+          <button onclick="resetDataToSeed()" class="w-full flex items-center justify-between p-3 rounded-2xl border border-red-200 hover:bg-red-50 text-red-700 transition text-left">
+            <div class="flex items-center gap-3">
+              <i data-lucide="rotate-ccw" class="w-5 h-5 text-red-600"></i>
+              <div>
+                <div class="text-sm font-semibold">Obnovit výchozí katalog</div>
+                <div class="text-xs text-red-500/80">Smaže úpravy a načte bohatá výchozí data</div>
+              </div>
+            </div>
+            <i data-lucide="chevron-right" class="w-4 h-4 text-red-300"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content Container -->
+    <main class="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+      <!-- 1. HOME SCREEN (Rozcestník) -->
+      <section id="home-screen" class="space-y-8">
+        <!-- Hero Section -->
+        <div class="relative overflow-hidden bg-gradient-to-br from-forest-100 via-sand-100 to-stone-100 rounded-3xl p-6 sm:p-10 border border-forest-200/60 shadow-sm">
+          <div class="max-w-2xl relative z-10">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-forest-200/70 text-forest-900 mb-4">
+              <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Česká & Slovenská udržitelná scéna
+            </span>
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-forest-950 tracking-tight leading-tight">
+              Aplikace Udržitelně
+            </h1>
+            <p class="mt-3 text-stone-600 text-sm sm:text-base leading-relaxed">
+              Váš přehledný ekomapa a rozcestník. Objevujte etickou módu, udržitelné second handy a přírodní kosmetiku podle lokace i výrobků.
+            </p>
+          </div>
+          <div class="absolute -right-8 -bottom-8 opacity-10 sm:opacity-20 pointer-events-none text-forest-800">
+            <i data-lucide="leaf" class="w-64 h-64"></i>
+          </div>
+        </div>
+
+        <!-- Category Grid -->
+        <div>
+          <h2 class="text-lg font-bold text-stone-800 mb-4 flex items-center gap-2">
+            <i data-lucide="compass" class="w-5 h-5 text-forest-600"></i>
+            Vyberte kategorii rozcestníku
+          </h2>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+            
+            <!-- Category 1: Second hand & Vintage -->
+            <div onclick="openCategory('secondhand')" class="group relative bg-white rounded-3xl p-6 border border-stone-200 hover:border-forest-400 hover:shadow-xl transition-all duration-300 cursor-pointer flex flex-col justify-between overflow-hidden">
+              <div class="absolute top-0 left-0 w-2 h-full bg-terracotta-500 rounded-l-3xl"></div>
+              <div>
+                <div class="w-12 h-12 rounded-2xl bg-terracotta-50 text-terracotta-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                  <i data-lucide="shirt" class="w-6 h-6"></i>
+                </div>
+                <h3 class="text-lg font-bold text-stone-900 group-hover:text-terracotta-600 transition">
+                  Second handy & Vintage
+                </h3>
+                <p class="text-xs text-stone-500 mt-2 leading-relaxed">
+                  Výběrové sekáče, vintage obchody a udržitelné mánie s jedinečnými kousky z druhé ruky.
+                </p>
+              </div>
+              <div class="mt-6 flex items-center justify-between pt-4 border-t border-stone-100">
+                <span id="count-secondhand" class="text-xs font-semibold px-2.5 py-1 rounded-full bg-stone-100 text-stone-600">0 obchodů</span>
+                <span class="text-xs font-bold text-terracotta-600 flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                  Procházet <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                </span>
+              </div>
+            </div>
+
+            <!-- Category 2: Natural Cosmetics -->
+            <div onclick="openCategory('cosmetics')" class="group relative bg-white rounded-3xl p-6 border border-stone-200 hover:border-forest-400 hover:shadow-xl transition-all duration-300 cursor-pointer flex flex-col justify-between overflow-hidden">
+              <div class="absolute top-0 left-0 w-2 h-full bg-forest-500 rounded-l-3xl"></div>
+              <div>
+                <div class="w-12 h-12 rounded-2xl bg-forest-50 text-forest-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                  <i data-lucide="flower-2" class="w-6 h-6"></i>
+                </div>
+                <h3 class="text-lg font-bold text-stone-900 group-hover:text-forest-600 transition">
+                  Přírodní kosmetika
+                </h3>
+                <p class="text-xs text-stone-500 mt-2 leading-relaxed">
+                  České a slovenské e-shopy a výrobci organické, netestované a šetrné kosmetiky.
+                </p>
+              </div>
+              <div class="mt-6 flex items-center justify-between pt-4 border-t border-stone-100">
+                <span id="count-cosmetics" class="text-xs font-semibold px-2.5 py-1 rounded-full bg-stone-100 text-stone-600">0 značek</span>
+                <span class="text-xs font-bold text-forest-600 flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                  Procházet <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                </span>
+              </div>
+            </div>
+
+            <!-- Category 3: Slow Fashion -->
+            <div onclick="openCategory('slowfashion')" class="group relative bg-white rounded-3xl p-6 border border-stone-200 hover:border-forest-400 hover:shadow-xl transition-all duration-300 cursor-pointer flex flex-col justify-between overflow-hidden">
+              <div class="absolute top-0 left-0 w-2 h-full bg-amber-500 rounded-l-3xl"></div>
+              <div>
+                <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                  <i data-lucide="scissors" class="w-6 h-6"></i>
+                </div>
+                <h3 class="text-lg font-bold text-stone-900 group-hover:text-amber-600 transition">
+                  Slow Fashion Značky
+                </h3>
+                <p class="text-xs text-stone-500 mt-2 leading-relaxed">
+                  Lokální etická móda, lněné oděvy, udržitelné boty a autorský československý design.
+                </p>
+              </div>
+              <div class="mt-6 flex items-center justify-between pt-4 border-t border-stone-100">
+                <span id="count-slowfashion" class="text-xs font-semibold px-2.5 py-1 rounded-full bg-stone-100 text-stone-600">0 značek</span>
+                <span class="text-xs font-bold text-amber-600 flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                  Procházet <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                </span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Quick Info Banner -->
+        <div class="bg-sand-100/70 border border-sand-300/60 rounded-3xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div class="flex items-center gap-3">
+            <div class="p-2.5 bg-sand-200 rounded-2xl text-stone-700">
+              <i data-lucide="plus-circle" class="w-6 h-6"></i>
+            </div>
+            <div>
+              <h4 class="text-sm font-bold text-stone-900">Víte o etické značce nebo sekáči?</h4>
+              <p class="text-xs text-stone-600">Jednoduše ji přidejte do aplikace Udržitelně s lokací i odkazem.</p>
+            </div>
+          </div>
+          <button onclick="openAddModal()" class="w-full sm:w-auto px-4 py-2.5 bg-forest-600 hover:bg-forest-700 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 shadow-sm whitespace-nowrap">
+            <i data-lucide="plus" class="w-4 h-4"></i> Přidat do databáze
+          </button>
+        </div>
+      </section>
+
+      <!-- 2. CATEGORY LIST & SEARCH SCREEN -->
+      <section id="list-screen" class="hidden space-y-6">
+        
+        <!-- Category Title & Actions Banner -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-stone-200">
+          <div>
+            <span id="current-category-badge" class="text-xs font-bold uppercase tracking-wider text-forest-600">Kategorie</span>
+            <h1 id="current-category-title" class="text-2xl sm:text-3xl font-extrabold text-stone-900">Název Kategorie</h1>
+          </div>
+          <button onclick="openAddModal()" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-forest-600 hover:bg-forest-700 text-white rounded-xl text-sm font-semibold shadow-sm transition">
+            <i data-lucide="plus" class="w-4 h-4"></i>
+            <span>Přidat značku</span>
+          </button>
+        </div>
+
+        <!-- Filters & Search Toolbar -->
+        <div class="bg-white p-4 sm:p-5 rounded-3xl border border-stone-200 shadow-sm space-y-3">
+          
+          <!-- Search Input -->
+          <div class="relative">
+            <i data-lucide="search" class="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-400"></i>
+            <input type="text" id="search-input" oninput="renderList()" placeholder="Hledat podle názvu, města (Praha, Brno, Bratislava...), nebo výrobku (krémy, šaty, barefoot...)..." 
+              class="w-full pl-10 pr-4 py-2.5 text-sm bg-stone-50 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-forest-500 focus:bg-white transition">
+          </div>
+
+          <!-- Filter Controls -->
+          <div class="flex flex-wrap items-center justify-between gap-3 pt-1">
+            <div class="flex flex-wrap items-center gap-2 text-xs">
+              
+              <!-- Store Type Filter -->
+              <span class="text-stone-400 font-medium mr-1">Typ:</span>
+              <button onclick="setFilter('type', 'all')" id="filter-type-all" class="px-3 py-1.5 rounded-lg border font-medium transition filter-btn bg-forest-600 text-white border-forest-600">Vše</button>
+              <button onclick="setFilter('type', 'store')" id="filter-type-store" class="px-3 py-1.5 rounded-lg border font-medium bg-stone-50 text-stone-600 border-stone-200 hover:bg-stone-100 transition filter-btn">Kamenná prodejna</button>
+              <button onclick="setFilter('type', 'eshop')" id="filter-type-eshop" class="px-3 py-1.5 rounded-lg border font-medium bg-stone-50 text-stone-600 border-stone-200 hover:bg-stone-100 transition filter-btn">Pouze e-shop</button>
+
+              <div class="h-4 w-px bg-stone-200 mx-1"></div>
+
+              <!-- Country Filter -->
+              <span class="text-stone-400 font-medium mr-1">Země:</span>
+              <button onclick="setFilter('country', 'all')" id="filter-country-all" class="px-3 py-1.5 rounded-lg border font-medium transition filter-btn-country bg-forest-600 text-white border-forest-600">Vše</button>
+              <button onclick="setFilter('country', 'CZ')" id="filter-country-cz" class="px-3 py-1.5 rounded-lg border font-medium bg-stone-50 text-stone-600 border-stone-200 hover:bg-stone-100 transition filter-btn-country">🇨🇿 CZ</button>
+              <button onclick="setFilter('country', 'SK')" id="filter-country-sk" class="px-3 py-1.5 rounded-lg border font-medium bg-stone-50 text-stone-600 border-stone-200 hover:bg-stone-100 transition filter-btn-country">🇸🇰 SK</button>
+            </div>
+
+            <!-- Results Counter -->
+            <div id="results-count" class="text-xs text-stone-500 font-medium">
+              Zobrazeno 0 položek
+            </div>
+          </div>
+        </div>
+
+        <!-- Items Cards Grid -->
+        <div id="items-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Dynamic cards inserted via JS -->
+        </div>
+
+        <!-- Empty state message -->
+        <div id="empty-state" class="hidden text-center py-12 bg-white rounded-3xl border border-stone-200 p-8">
+          <div class="w-12 h-12 rounded-full bg-stone-100 text-stone-400 flex items-center justify-center mx-auto mb-3">
+            <i data-lucide="search-x" class="w-6 h-6"></i>
+          </div>
+          <h3 class="text-base font-bold text-stone-800">Nenalezeny žádné odpovídající značky</h3>
+          <p class="text-xs text-stone-500 mt-1 max-w-sm mx-auto">Zkuste upravit vyhledávací dotaz nebo vybrat jiné filtry.</p>
+        </div>
+
+      </section>
+    </main>
+
+    <!-- Modal: ADD / EDIT ITEM -->
+    <div id="item-modal" class="hidden fixed inset-0 z-50 bg-stone-900/50 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+      <div class="bg-white rounded-3xl p-6 max-w-lg w-full shadow-2xl border border-stone-100 relative my-8">
+        
+        <button onclick="closeModal()" class="absolute top-5 right-5 text-stone-400 hover:text-stone-600 p-1">
+          <i data-lucide="x" class="w-6 h-6"></i>
+        </button>
+
+        <h3 id="modal-title" class="text-xl font-bold text-stone-900 mb-1">Přidat novou značku</h3>
+        <p class="text-xs text-stone-500 mb-6">Vyplňte informace o udržitelném obchodu nebo e-shopu do aplikace Udržitelně.</p>
+
+        <form id="item-form" onsubmit="handleFormSubmit(event)" class="space-y-4">
+          <input type="hidden" id="form-item-id">
+          
+          <!-- Category Select -->
+          <div>
+            <label class="block text-xs font-semibold text-stone-700 mb-1">Kategorie *</label>
+            <select id="form-category" required class="w-full px-3.5 py-2.5 text-sm bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-forest-500 focus:outline-none">
+              <option value="secondhand">Second handy a vintage obchody</option>
+              <option value="cosmetics">Přírodní kosmetika CZ/SK</option>
+              <option value="slowfashion">Slow fashion značky CZ/SK</option>
+            </select>
+          </div>
+
+          <!-- Name & Country Grid -->
+          <div class="grid grid-cols-3 gap-3">
+            <div class="col-span-2">
+              <label class="block text-xs font-semibold text-stone-700 mb-1">Název značky/obchodu *</label>
+              <input type="text" id="form-title" required placeholder="např. Nobilis Tilia" class="w-full px-3.5 py-2.5 text-sm bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-forest-500 focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-stone-700 mb-1">Země *</label>
+              <select id="form-country" required class="w-full px-3.5 py-2.5 text-sm bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-forest-500 focus:outline-none">
+                <option value="CZ">🇨🇿 CZ</option>
+                <option value="SK">🇸🇰 SK</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Has Store Checkbox & Location -->
+          <div class="p-3.5 bg-stone-50 rounded-2xl border border-stone-200 space-y-3">
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" id="form-has-store" onchange="toggleLocationField()" class="w-4 h-4 text-forest-600 rounded border-stone-300 focus:ring-forest-500">
+              <span class="text-xs font-semibold text-stone-800">Provozuje kamennou prodejnu?</span>
+            </label>
+
+            <div id="location-field-container" class="hidden pt-1">
+              <label class="block text-xs font-semibold text-stone-700 mb-1">Adresa / Město prodejny</label>
+              <input type="text" id="form-location" placeholder="např. Krymská 2, Praha 10" class="w-full px-3.5 py-2 text-sm bg-white border border-stone-200 rounded-xl focus:ring-2 focus:ring-forest-500 focus:outline-none">
+            </div>
+          </div>
+
+          <!-- Products / Tags -->
+          <div>
+            <label class="block text-xs font-semibold text-stone-700 mb-1">Hlavní výrobky / Sortiment / Tagy *</label>
+            <input type="text" id="form-products" required placeholder="např. Pleťové oleje, tuhé šampony, přírodní mýdla" class="w-full px-3.5 py-2.5 text-sm bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-forest-500 focus:outline-none">
+            <span class="text-[10px] text-stone-400 mt-0.5 block">Napište klíčová slova oddělená čárkami pro snazší hledání.</span>
+          </div>
+
+          <!-- Description -->
+          <div>
+            <label class="block text-xs font-semibold text-stone-700 mb-1">Popis značky a udržitelnosti</label>
+            <textarea id="form-description" rows="2" placeholder="Informace o přírodním složení, lokální výrobě, certifikaci či příběhu..." class="w-full px-3.5 py-2.5 text-sm bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-forest-500 focus:outline-none resize-none"></textarea>
+          </div>
+
+          <!-- Web URL & Contact Grid -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-semibold text-stone-700 mb-1">Web / E-shop URL</label>
+              <input type="url" id="form-url" placeholder="https://www.priklad.cz" class="w-full px-3.5 py-2.5 text-sm bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-forest-500 focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-stone-700 mb-1">Telefonní kontakt</label>
+              <input type="text" id="form-phone" placeholder="+420 123 456 789" class="w-full px-3.5 py-2.5 text-sm bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-forest-500 focus:outline-none">
+            </div>
+          </div>
+
+          <!-- Form Actions -->
+          <div class="flex items-center justify-end gap-3 pt-4 border-t border-stone-100">
+            <button type="button" onclick="closeModal()" class="px-4 py-2.5 rounded-xl text-xs font-semibold text-stone-600 hover:bg-stone-100 transition">
+              Zrušit
+            </button>
+            <button type="submit" class="px-5 py-2.5 bg-forest-600 hover:bg-forest-700 text-white rounded-xl text-xs font-bold shadow-sm transition">
+              Uložit značku
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none bg-stone-900 text-white px-4 py-3 rounded-2xl shadow-xl flex items-center gap-3 text-xs font-medium">
+      <i id="toast-icon" data-lucide="check-circle" class="w-5 h-5 text-emerald-400"></i>
+      <span id="toast-msg">Zpráva</span>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-auto border-t border-stone-200 bg-stone-100 py-6 text-center text-xs text-stone-500">
+      <div class="max-w-5xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div class="flex items-center gap-2">
+          <i data-lucide="sprout" class="w-4 h-4 text-forest-600"></i>
+          <span class="font-bold text-stone-800">Udržitelně</span> &copy; 2026 - Československý EkoRozcestník
+        </div>
+        <div>Offline PWA Aplikace • Data ukládána lokálně</div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    /* ==========================================================================
+       INITIAL RICH SEED DATABASE
+       ========================================================================== */
+    const SEED_DATA = [
+      // 1. Second handy & Vintage
+      {
+        id: 'sh-1',
+        category: 'secondhand',
+        title: 'Crashily Vintage & Secondhand',
+        country: 'CZ',
+        hasStore: true,
+        location: 'Krymská 2, Praha 10 - Vršovice',
+        products: 'Vintage šaty, retro bundy, doplňky, 80s a 90s móda',
+        description: 'Přední vršovický výběrový vintage obchůdek s unikátními módními kousky z celého světa.',
+        url: 'https://www.instagram.com/crashily_vintage/',
+        phone: '+420 777 123 456'
+      },
+      {
+        id: 'sh-2',
+        category: 'secondhand',
+        title: 'NOSENE',
+        country: 'SK',
+        hasStore: true,
+        location: 'Obchodná 48, Bratislava',
+        products: 'Voňavý second hand, upcyklovaná kolekce Renewals, kabáty, košile',
+        description: 'Slovenský voňavý second hand s hlubší myšlenkou. Část ze zisku podporuje týrané ženy.',
+        url: 'https://www.nosene.sk',
+        phone: '+421 905 111 222'
+      },
+      {
+        id: 'sh-3',
+        category: 'secondhand',
+        title: 'Kúzelná Vintage',
+        country: 'CZ',
+        hasStore: true,
+        location: 'Jaselská 14, Brno',
+        products: 'Hedvábné šátky, vintage kabelky, prsteny, retro šaty',
+        description: 'Brněnský retro poklad plný pečlivě kurátorovaných kousků s neopakovatelnou historií.',
+        url: 'https://www.instagram.com/kuzelnavintage/',
+        phone: '+420 608 987 654'
+      },
+      {
+        id: 'sh-4',
+        category: 'secondhand',
+        title: 'Thrift Shop Bratislava',
+        country: 'SK',
+        hasStore: true,
+        location: 'Štúrova 4, Bratislava',
+        products: 'Streetwear z druhé ruky, jeansy, značkové mikiny, čepice',
+        description: 'Slovenský thrift koncept zaměřený na udržitelné kousky a mladou módu.',
+        url: 'https://www.instagram.com/thriftshop_ba/',
+        phone: ''
+      },
+
+      // 2. Přírodní kosmetika
+      {
+        id: 'cos-1',
+        category: 'cosmetics',
+        title: 'Kvitok',
+        country: 'SK',
+        hasStore: true,
+        location: 'Humenné (Slovensko) & Partnerské prodejny v CZ/SK',
+        products: 'Tuhé šampony, šlehané tělové krémy, séra, bezodpadová péče',
+        description: 'Známá slovenská ručně vyráběná přírodní kosmetika z čistých rostlinných ingrediencí.',
+        url: 'https://www.kvitok.sk',
+        phone: '+421 917 000 111'
+      },
+      {
+        id: 'cos-2',
+        category: 'cosmetics',
+        title: 'Nobilis Tilia',
+        country: 'CZ',
+        hasStore: true,
+        location: 'Vlčí Hora 147, Krásná Lípa',
+        products: 'Aromaterapie, pleťové oleje, tělová mléka, dětská bio kosmetika',
+        description: 'Průkopník české certifikované přírodní a bio kosmetiky v srdci Českého Švýcarska.',
+        url: 'https://www.nobilis.cz',
+        phone: '+420 412 383 181'
+      },
+      {
+        id: 'cos-3',
+        category: 'cosmetics',
+        title: 'Mylo',
+        country: 'SK',
+        hasStore: false,
+        location: 'E-shop (Slovensko / Česko)',
+        products: 'Přírodní mýdla, květové vody, pleťová séra, péče o vousy',
+        description: 'Slovenská značka ručně vyráběné přírodní kosmetiky v šetrných a recyklovatelných obalech.',
+        url: 'https://www.mylo.sk',
+        phone: ''
+      },
+      {
+        id: 'cos-4',
+        category: 'cosmetics',
+        title: 'Dulcia Natural',
+        country: 'SK',
+        hasStore: true,
+        location: 'Bratislava a síť partnerů CZ/SK',
+        products: 'Růžová voda, oční krémy, hyaluronová séra, deodorační krémy',
+        description: 'Poctivá slovenská kosmetika založená na vysokém obsahu bylinných a růžových hydrosolů.',
+        url: 'https://www.dulcia.sk',
+        phone: '+421 948 222 333'
+      },
+      {
+        id: 'cos-5',
+        category: 'cosmetics',
+        title: 'Soaphoria',
+        country: 'SK',
+        hasStore: true,
+        location: 'Veľké Kapušany & Prodejny v ČR',
+        products: 'Tělová suflé, tuhá mýdla, organické jíly, koupelové soli',
+        description: 'Organická vegetariánská kosmetika nabízející zážitek z přírodních vůní a balení.',
+        url: 'https://www.soaphoria.sk',
+        phone: ''
+      },
+
+      // 3. Slow Fashion
+      {
+        id: 'sf-1',
+        category: 'slowfashion',
+        title: 'Bohempia',
+        country: 'CZ',
+        hasStore: true,
+        location: 'Sokolovská 105/76, Praha 8 - Karlín',
+        products: 'Konopné tenisky, konopná trička, barefoot obuv, pončo',
+        description: 'Česká ekologická značka vyrábějící udržitelné boty a oblečení z konopného vlákna lokálně v ČR/EU.',
+        url: 'https://www.bohempia.com',
+        phone: '+420 774 444 555'
+      },
+      {
+        id: 'sf-2',
+        category: 'slowfashion',
+        title: 'Woolife',
+        country: 'CZ',
+        hasStore: true,
+        location: 'Náměstí Míru, Zlín',
+        products: 'Merino svetry, termoprádlo, vlna, udržitelné doplňky',
+        description: 'Česká tradice výroby oděvů a doplňků z prémiové 100% Merino vlny.',
+        url: 'https://www.woolife.cz',
+        phone: '+420 577 000 999'
+      },
+      {
+        id: 'sf-3',
+        category: 'slowfashion',
+        title: 'Malinna',
+        country: 'SK',
+        hasStore: false,
+        location: 'E-shop (Slovensko)',
+        products: 'Lněné šaty, minimalistická trička, organická péče',
+        description: 'Slovenský koncept zaměřený na čistý životní styl, kvalitní len a organickou péči.',
+        url: 'https://www.malinna.com',
+        phone: ''
+      }
+    ];
+
+    /* ==========================================================================
+       APP STATE & LOCAL STORAGE
+       ========================================================================== */
+    let items = [];
+    let currentCategory = 'secondhand';
+    let filters = {
+      search: '',
+      type: 'all', // 'all', 'store', 'eshop'
+      country: 'all' // 'all', 'CZ', 'SK'
+    };
+
+    const CATEGORY_NAMES = {
+      secondhand: 'Second handy a vintage obchody',
+      cosmetics: 'E-shopy s CZ/SK přírodní kosmetikou',
+      slowfashion: 'České a slovenské slow fashion značky'
+    };
+
+    function loadData() {
+      const stored = localStorage.getItem('udrzitelne_data_v2');
+      if (stored) {
+        try {
+          items = JSON.parse(stored);
+        } catch(e) {
+          console.error("Failed to parse storage, using seeds", e);
+          items = [...SEED_DATA];
+        }
+      } else {
+        items = [...SEED_DATA];
+        saveData();
+      }
+      updateCategoryCounts();
+    }
+
+    function saveData() {
+      localStorage.setItem('udrzitelne_data_v2', JSON.stringify(items));
+      updateCategoryCounts();
+    }
+
+    /* ==========================================================================
+       NAVIGATION & SCREEN MANAGEMENT
+       ========================================================================== */
+    function showHome() {
+      document.getElementById('home-screen').classList.remove('hidden');
+      document.getElementById('list-screen').classList.add('hidden');
+      document.getElementById('back-btn').classList.add('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function openCategory(catKey) {
+      currentCategory = catKey;
+      document.getElementById('home-screen').classList.add('hidden');
+      document.getElementById('list-screen').classList.remove('hidden');
+      document.getElementById('back-btn').classList.remove('hidden');
+
+      document.getElementById('current-category-title').textContent = CATEGORY_NAMES[catKey];
+      document.getElementById('current-category-badge').textContent = catKey === 'secondhand' ? 'Sekáče & Vintage' : (catKey === 'cosmetics' ? 'Přírodní Kosmetika' : 'Etická Móda');
+
+      document.getElementById('search-input').value = '';
+      filters.search = '';
+      setFilter('type', 'all');
+      setFilter('country', 'all');
+
+      renderList();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function updateCategoryCounts() {
+      ['secondhand', 'cosmetics', 'slowfashion'].forEach(cat => {
+        const count = items.filter(i => i.category === cat).length;
+        const el = document.getElementById(`count-${cat}`);
+        if (el) {
+          el.textContent = `${count} ${cat === 'secondhand' ? 'obchodů' : 'značek'}`;
+        }
+      });
+    }
+
+    /* ==========================================================================
+       FILTERING & LIST RENDERING
+       ========================================================================== */
+    function setFilter(kind, val) {
+      if (kind === 'type') {
+        filters.type = val;
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+          btn.className = "px-3 py-1.5 rounded-lg border font-medium transition filter-btn bg-stone-50 text-stone-600 border-stone-200 hover:bg-stone-100";
+        });
+        const activeBtn = document.getElementById(`filter-type-${val}`);
+        if (activeBtn) activeBtn.className = "px-3 py-1.5 rounded-lg border font-medium transition filter-btn bg-forest-600 text-white border-forest-600 shadow-sm";
+      } else if (kind === 'country') {
+        filters.country = val;
+        document.querySelectorAll('.filter-btn-country').forEach(btn => {
+          btn.className = "px-3 py-1.5 rounded-lg border font-medium transition filter-btn-country bg-stone-50 text-stone-600 border-stone-200 hover:bg-stone-100";
+        });
+        const activeBtn = document.getElementById(`filter-country-${val.toLowerCase()}`);
+        if (activeBtn) activeBtn.className = "px-3 py-1.5 rounded-lg border font-medium transition filter-btn-country bg-forest-600 text-white border-forest-600 shadow-sm";
+      }
+      renderList();
+    }
+
+    function renderList() {
+      const searchTerm = document.getElementById('search-input').value.toLowerCase().trim();
+      const grid = document.getElementById('items-grid');
+      const emptyState = document.getElementById('empty-state');
+      
+      const filtered = items.filter(item => {
+        if (item.category !== currentCategory) return false;
+        if (filters.country !== 'all' && item.country !== filters.country) return false;
+        if (filters.type === 'store' && !item.hasStore) return false;
+        if (filters.type === 'eshop' && item.hasStore) return false;
+
+        if (searchTerm) {
+          const matchTitle = item.title.toLowerCase().includes(searchTerm);
+          const matchLocation = item.location && item.location.toLowerCase().includes(searchTerm);
+          const matchProducts = item.products && item.products.toLowerCase().includes(searchTerm);
+          const matchDesc = item.description && item.description.toLowerCase().includes(searchTerm);
+          return matchTitle || matchLocation || matchProducts || matchDesc;
+        }
+
+        return true;
+      });
+
+      document.getElementById('results-count').textContent = `Zobrazeno ${filtered.length} z ${items.filter(i => i.category === currentCategory).length}`;
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+      grid.innerHTML = filtered.map(item => `
+        <div class="bg-white rounded-3xl p-5 border border-stone-200 shadow-sm hover:shadow-md transition flex flex-col justify-between group">
+          <div>
+            <!-- Header Badges -->
+            <div class="flex items-start justify-between gap-2 mb-2">
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <span class="px-2.5 py-0.5 rounded-md text-[11px] font-bold ${item.country === 'CZ' ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-amber-50 text-amber-800 border border-amber-200'}">
+                  ${item.country === 'CZ' ? '🇨🇿 CZ' : '🇸🇰 SK'}
+                </span>
+                ${item.hasStore ? `
+                  <span class="px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200 flex items-center gap-1">
+                    <i data-lucide="map-pin" class="w-3 h-3"></i> Kamenná prodejna
+                  </span>
+                ` : `
+                  <span class="px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-stone-100 text-stone-600 border border-stone-200 flex items-center gap-1">
+                    <i data-lucide="globe" class="w-3 h-3"></i> Pouze e-shop
+                  </span>
+                `}
+              </div>
+
+              <!-- Actions -->
+              <div class="flex items-center gap-1 opacity-80 group-hover:opacity-100 transition">
+                <button onclick="openEditModal('${item.id}')" class="p-1.5 rounded-lg text-stone-400 hover:text-forest-700 hover:bg-stone-100 transition" title="Upravit">
+                  <i data-lucide="pencil" class="w-4 h-4"></i>
+                </button>
+                <button onclick="deleteItem('${item.id}')" class="p-1.5 rounded-lg text-stone-400 hover:text-red-600 hover:bg-red-50 transition" title="Smazat">
+                  <i data-lucide="trash-2" class="w-4 h-4"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Title -->
+            <h3 class="text-base font-bold text-stone-900 mb-1 leading-snug">${escapeHtml(item.title)}</h3>
+
+            <!-- Location -->
+            ${item.hasStore && item.location ? `
+              <div class="text-xs text-stone-600 flex items-start gap-1.5 mb-2 font-medium">
+                <i data-lucide="map-pin" class="w-3.5 h-3.5 text-forest-600 shrink-0 mt-0.5"></i>
+                <span>${escapeHtml(item.location)}</span>
+              </div>
+            ` : ''}
+
+            <!-- Phone Contact if available -->
+            ${item.phone ? `
+              <div class="text-xs text-stone-500 flex items-center gap-1.5 mb-2">
+                <i data-lucide="phone" class="w-3.5 h-3.5 text-stone-400"></i>
+                <span>${escapeHtml(item.phone)}</span>
+              </div>
+            ` : ''}
+
+            <!-- Products Badge Tag -->
+            <div class="mb-3">
+              <span class="text-[11px] text-stone-400 font-semibold block mb-1">Výrobky / Sortiment:</span>
+              <p class="text-xs text-stone-800 font-medium bg-sand-100/70 border border-sand-200/80 rounded-2xl p-2.5">
+                ${escapeHtml(item.products)}
+              </p>
+            </div>
+
+            <!-- Description -->
+            ${item.description ? `
+              <p class="text-xs text-stone-500 line-clamp-2 leading-relaxed mb-4">${escapeHtml(item.description)}</p>
+            ` : ''}
+          </div>
+
+          <!-- Footer Link -->
+          <div class="pt-3 border-t border-stone-100 flex items-center justify-between mt-2">
+            ${item.url ? `
+              <a href="${escapeHtml(item.url)}" target="_blank" rel="noopener" class="text-xs font-bold text-forest-700 hover:text-forest-800 flex items-center gap-1 hover:underline">
+                <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Otevřít web / e-shop
+              </a>
+            ` : `<span class="text-xs text-stone-400">Bez spojeného odkazu</span>`}
+          </div>
+        </div>
+      `).join('');
+
+      lucide.createIcons();
+    }
+
+    /* ==========================================================================
+       CRUD MODAL FORM HANDLERS
+       ========================================================================== */
+    function openAddModal() {
+      document.getElementById('item-form').reset();
+      document.getElementById('form-item-id').value = '';
+      document.getElementById('form-category').value = currentCategory;
+      document.getElementById('modal-title').textContent = 'Přidat novou značku';
+      toggleLocationField();
+      document.getElementById('item-modal').classList.remove('hidden');
+    }
+
+    function openEditModal(id) {
+      const item = items.find(i => i.id === id);
+      if (!item) return;
+
+      document.getElementById('form-item-id').value = item.id;
+      document.getElementById('form-category').value = item.category;
+      document.getElementById('form-title').value = item.title;
+      document.getElementById('form-country').value = item.country;
+      document.getElementById('form-has-store').checked = item.hasStore;
+      document.getElementById('form-location').value = item.location || '';
+      document.getElementById('form-products').value = item.products;
+      document.getElementById('form-description').value = item.description || '';
+      document.getElementById('form-url').value = item.url || '';
+      document.getElementById('form-phone').value = item.phone || '';
+
+      document.getElementById('modal-title').textContent = 'Upravit značku v Udržitelně';
+      toggleLocationField();
+      document.getElementById('item-modal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+      document.getElementById('item-modal').classList.add('hidden');
+    }
+
+    function toggleLocationField() {
+      const hasStore = document.getElementById('form-has-store').checked;
+      const locContainer = document.getElementById('location-field-container');
+      if (hasStore) {
+        locContainer.classList.remove('hidden');
+      } else {
+        locContainer.classList.add('hidden');
+      }
+    }
+
+    function handleFormSubmit(e) {
+      e.preventDefault();
+      
+      const id = document.getElementById('form-item-id').value;
+      const category = document.getElementById('form-category').value;
+      const title = document.getElementById('form-title').value.trim();
+      const country = document.getElementById('form-country').value;
+      const hasStore = document.getElementById('form-has-store').checked;
+      const location = hasStore ? document.getElementById('form-location').value.trim() : '';
+      const products = document.getElementById('form-products').value.trim();
+      const description = document.getElementById('form-description').value.trim();
+      const url = document.getElementById('form-url').value.trim();
+      const phone = document.getElementById('form-phone').value.trim();
+
+      if (!title || !products) {
+        showToast('Vyplňte prosím název a výrobky', true);
+        return;
+      }
+
+      if (id) {
+        const idx = items.findIndex(i => i.id === id);
+        if (idx !== -1) {
+          items[idx] = { id, category, title, country, hasStore, location, products, description, url, phone };
+          showToast('Značka byla úspešně upravena');
+        }
+      } else {
+        const newItem = {
+          id: 'udrzitelne-' + Date.now(),
+          category,
+          title,
+          country,
+          hasStore,
+          location,
+          products,
+          description,
+          url,
+          phone
+        };
+        items.unshift(newItem);
+        showToast('Značka byla přidána do aplikace Udržitelně');
+      }
+
+      saveData();
+      closeModal();
+
+      if (!document.getElementById('list-screen').classList.contains('hidden')) {
+        renderList();
+      }
+    }
+
+    function deleteItem(id) {
+      if (confirm('Opravdu chcete tuto značku vymazat z databáze Udržitelně?')) {
+        items = items.filter(i => i.id !== id);
+        saveData();
+        renderList();
+        showToast('Značka byla odstraněna');
+      }
+    }
+
+    /* ==========================================================================
+       IMPORT / EXPORT / RESET
+       ========================================================================== */
+    function toggleDataMenu() {
+      document.getElementById('data-menu').classList.toggle('hidden');
+    }
+
+    function exportData() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(items, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `udrzitelne_databaze_${new Date().toISOString().slice(0,10)}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+      showToast('Záloha byla stažena');
+      toggleDataMenu();
+    }
+
+    function importData(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const imported = JSON.parse(e.target.result);
+          if (Array.isArray(imported)) {
+            items = imported;
+            saveData();
+            if (!document.getElementById('list-screen').classList.contains('hidden')) {
+              renderList();
+            }
+            showToast('Nová data byla importována!');
+            toggleDataMenu();
+          } else {
+            showToast('Chybný formát souboru', true);
+          }
+        } catch(err) {
+          showToast('Chyba při čtení JSON', true);
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function resetDataToSeed() {
+      if (confirm('Obnovit výchozí databázi aplikace Udržitelně? Všechny vaše úpravy budou přepsány.')) {
+        items = [...SEED_DATA];
+        saveData();
+        if (!document.getElementById('list-screen').classList.contains('hidden')) {
+          renderList();
+        }
+        showToast('Výchozí databáze byla obnovena');
+        toggleDataMenu();
+      }
+    }
+
+    /* ==========================================================================
+       TOAST UTILITY
+       ========================================================================== */
+    function showToast(msg, isError = false) {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toast-msg');
+      const toastIcon = document.getElementById('toast-icon');
+
+      toastMsg.textContent = msg;
+      if (isError) {
+        toastIcon.className = "w-5 h-5 text-red-400";
+        toastIcon.setAttribute('data-lucide', 'alert-circle');
+      } else {
+        toastIcon.className = "w-5 h-5 text-emerald-400";
+        toastIcon.setAttribute('data-lucide', 'check-circle');
+      }
+      lucide.createIcons();
+
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, 3000);
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/[&<>"']/g, function(m) {
+        return {
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#039;'
+        }[m];
+      });
+    }
+
+    /* ==========================================================================
+       PWA SERVICE WORKER & MANIFEST
+       ========================================================================== */
+    function setupPWA() {
+      const manifestObj = {
+        name: "Udržitelně - EkoRozcestník CZ/SK",
+        short_name: "Udržitelně",
+        description: "Rozcestník udržitelné módy, vintage obchodů a české a slovenské přírodní kosmetiky",
+        start_url: "./",
+        display: "standalone",
+        background_color: "#f2f7f3",
+        theme_color: "#3e6b47",
+        icons: [
+          {
+            src: "https://placehold.co/192x192/3e6b47/ffffff.png?text=Udrzitelne",
+            sizes: "192x192",
+            type: "image/png"
+          },
+          {
+            src: "https://placehold.co/512x512/3e6b47/ffffff.png?text=Udrzitelne+CZSK",
+            sizes: "512x512",
+            type: "image/png"
+          }
+        ]
+      };
+
+      const manifestBlob = new Blob([JSON.stringify(manifestObj)], { type: 'application/json' });
+      const manifestUrl = URL.createObjectURL(manifestBlob);
+      const link = document.createElement('link');
+      link.rel = 'manifest';
+      link.href = manifestUrl;
+      document.head.appendChild(link);
+
+      if ('serviceWorker' in navigator) {
+        const swCode = `
+          const CACHE_NAME = 'udrzitelne-cache-v1';
+          self.addEventListener('install', (e) => {
+            self.skipWaiting();
+          });
+          self.addEventListener('activate', (e) => {
+            e.waitUntil(clients.claim());
+          });
+          self.addEventListener('fetch', (e) => {
+            e.respondWith(
+              fetch(e.request).catch(() => caches.match(e.request))
+            );
+          });
+        `;
+        const swBlob = new Blob([swCode], { type: 'text/javascript' });
+        const swUrl = URL.createObjectURL(swBlob);
+        
+        navigator.serviceWorker.register(swUrl).then(() => {
+          console.log('PWA Service Worker for Udržitelně registered.');
+        }).catch(err => {
+          console.warn('SW registration note:', err);
+        });
+      }
+
+      let deferredPrompt;
+      const installBtn = document.getElementById('install-pwa-btn');
+
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        installBtn.classList.remove('hidden');
+        installBtn.classList.add('flex');
+      });
+
+      installBtn.addEventListener('click', async () => {
+        if (!deferredPrompt) return;
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+          installBtn.classList.add('hidden');
+        }
+        deferredPrompt = null;
+      });
+    }
+
+    /* ==========================================================================
+       APP INITIALIZATION
+       ========================================================================== */
+    window.onload = function() {
+      lucide.createIcons();
+      loadData();
+      setupPWA();
+    };
+  </script>
+</body>
+</html>
